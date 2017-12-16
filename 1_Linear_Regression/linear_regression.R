@@ -120,7 +120,7 @@ testing_Linear_Regression <- function(){
   ## test out the 'myLinearRegression' function 
 
   ## Define parameters
-  n    <- 5
+  n    <- 10
   p    <- 5
   
   ## Simulate data from our assumed model.
