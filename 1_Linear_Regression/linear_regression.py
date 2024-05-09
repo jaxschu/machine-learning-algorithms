@@ -54,9 +54,6 @@ def myGaussJordanVec(A, m):
   
   ## Function returns the np.array B
   return B
-  
-
-
 
 
 ######################################################
