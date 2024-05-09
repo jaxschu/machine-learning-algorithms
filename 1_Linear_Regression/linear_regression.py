@@ -1,38 +1,29 @@
-
-
 import numpy as np
 
-###############################################
-## Function 1: Plain version of Gauss Jordan ##
-###############################################
-
-
+#Function 1: Plain version of Gauss Jordan
 def myGaussJordan(A, m):
-  
-  """
-  Perform Gauss Jordan elimination on A.
-  
-  A: a square matrix.
-  m: the pivot element is A[m, m].
-  Returns a matrix with the identity matrix 
-  on the left and the inverse of A on the right. 
+    """
+    Perform Gauss Jordan elimination on A.
+    
+    A: a square matrix.
+    m: the pivot element is A[m, m].
+    Returns a matrix with the identity matrix 
+    on the left and the inverse of A on the right. 
+    """
+    n = A.shape[0]
+    B = np.hstack((A, np.identity(n)))
+    for k in range(n):  # 修改为n，以确保处理所有行
+        a = B[k, k]
+        for j in range(n * 2):
+            B[k, j] = B[k, j] / a
+        for i in range(n):
+            if i != k:
+                b = B[i, k]
+                for j in range(n * 2):
+                    B[i, j] = B[i, j] - B[k, j] * b
 
-  FILL IN THE BODY OF THIS FUNCTION BELOW 
-  """
-  n = A.shape[0]
-  B = np.hstack((A, np.identity(n)))
-  for k in range(m):
-    a = B[k,k]
-    for j in range(n*2):
-        B[k,j] = B[k, j] / a
-    for i in range(n):
-        if (i != k):
-            b = B[i,k]
-            for j in range(n*2):
-                B[i,j] = B[i,j] - B[k,j]*b
+    return B
 
-  ## Function returns the np.array B
-  return B
   
 
 
