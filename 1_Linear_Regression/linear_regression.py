@@ -24,77 +24,56 @@ def myGaussJordan(A, m):
 
     return B
 
-  
-
-
-####################################################
-## Function 2: Vectorized version of Gauss Jordan ##
-####################################################
-
 def myGaussJordanVec(A, m):
-  
-  """
-  Perform Gauss Jordan elimination on A.
-  
-  A: a square matrix.
-  m: the pivot element is A[m, m].
-  Returns a matrix with the identity matrix 
-  on the left and the inverse of A on the right.
-  
-  FILL IN THE BODY OF THIS FUNCTION BELOW
-  """
-  n = A.shape[0]
-  B = np.hstack((A, np.identity(n)))
-  for k in range(m):
-    B[k,] = B[k,] / B[k,k]
-    for i in range(n):
-        if (i != k):
-            B[i,] = B[i,] - B[k,] * B[i,k]
-  
-  
-  ## Function returns the np.array B
-  return B
+    """
+    Perform Gauss Jordan elimination on A using a vectorized approach.
+    
+    A: a square matrix.
+    m: the pivot element is A[m, m].
+    Returns a matrix with the identity matrix 
+    on the left and the inverse of A on the right.
+    """
+    n = A.shape[0]
+    B = np.hstack((A, np.identity(n)))
+    for k in range(n):  # 修改为 n，确保处理所有行
+        B[k, :] = B[k, :] / B[k, k]  # 缩放行使主对角线元素为 1
+        for i in range(n):
+            if i != k:
+                B[i, :] = B[i, :] - B[k, :] * B[i, k]  # 消除第i行的第k列
 
-
-######################################################
-## Function 3: Linear regression using Gauss Jordan ##
-######################################################
+    return B
 
 def myLinearRegression(X, Y):
-  
-  """
-  Find the regression coefficient estimates beta_hat
-  corresponding to the model Y = X * beta + epsilon
-  Your code must use one of the 2 Gauss Jordan 
-  functions you wrote above (either one is fine).
-  Note: we do not know what beta is. We are only 
-  given a matrix X and a vector Y and we must come 
-  up with an estimate beta_hat.
-  
-  X: an 'n row' by 'p column' matrix (np.array) of input variables.
-  Y: an n-dimensional vector (np.array) of responses
-
-  FILL IN THE BODY OF THIS FUNCTION BELOW
-  """
-
-  n = X.shape[0]
-  p = X.shape[1]
+    """
+    Find the regression coefficient estimates beta_hat
+    corresponding to the model Y = X * beta + epsilon
+    using Gauss Jordan elimination method.
     
-  temp1 = np.ones((n,1))
-  temp2 = np.hstack((temp1,X))
-  Z = np.hstack((temp2,Y))
+    X: an 'n row' by 'p column' matrix (np.array) of input variables.
+    Y: an n-dimensional vector (np.array) of responses
+    """
+    n, p = X.shape
+    
+    # Adding intercept term by appending a column of ones
+    X = np.hstack([np.ones((n, 1)), X])
+    
+    # Building the normal equation components
+    XTX = np.dot(X.T, X)
+    XTY = np.dot(X.T, Y)
+    
+    # Augmenting XTX with XTY for Gauss-Jordan
+    A = np.hstack([XTX, XTY.reshape(-1, 1)])
+    
+    # Applying Gauss-Jordan elimination
+    S = myGaussJordanVec(A, p + 1)  # Using the vectorized Gauss Jordan function
+    
+    # The last column of S (after Gauss-Jordan) will be the solution beta_hat
+    beta_hat = S[:, -1]  # Extracting beta_hat
+    
+    return beta_hat
 
-  A = np.dot(Z.transpose(),Z)
-  
-  S = myGaussJordan(A, p + 1)
-  
-  last_row = S[p+1]
-  index = np.size(last_row) - 1
-  beta_hat = -last_row[p+2: index]
-  ## Function returns the (p+1)-dimensional vector (np.array) 
-  ## beta_hat of regression coefficient estimates
-  #print beta_hat
-  return beta_hat
+# Note: Ensure to adjust the Gauss Jordan function to handle non-square matrices if needed.
+
   
 
 
